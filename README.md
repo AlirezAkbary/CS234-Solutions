@@ -1,2 +1,2 @@
 # CS234-Solutions
-This repository contains my solutions to the assignments of CS234: Reinforcement Learning 2020.
+In this repository, I put my solutions to the assignment of Stanford CS234: Reinforcement Learning course, which I overly enjoy. I think this is a great place to start the journey of Reinforcement Learning.
