@@ -1,0 +1,464 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+CS 234: Reinforcement Learning Winter 2020
+\begin_inset Newline newline
+\end_inset
+
+Assignment 1 Solution
+\end_layout
+
+\begin_layout Author
+Alireza Akbari
+\end_layout
+
+\begin_layout Section
+Gridworld
+\end_layout
+
+\begin_layout Enumerate
+An optimal policy is a policy in which for each state, the corresponding
+ value is higher than any other policy.
+ Now, we check each of the given 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+ set to find out the value functions of states, which generally is
+\begin_inset Formula 
+\[
+V^{\pi}(s)=r(s,\pi(s))+\gamma\Sigma_{s'}p(s'|s,\pi(s))V^{\pi}(s')
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $r_{s}=+1$
+\end_inset
+
+: In this way, the optimal policy never decides to stop the game, making
+ the policy to roam around since the discount factor 
+\begin_inset Formula $\gamma=1$
+\end_inset
+
+.
+ Hence, it could not be the shortest path to the green state.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $r_{s}=0$
+\end_inset
+
+: In this way, the optimal policy wants to reach the green state to obtain
+ a good reward.
+ However, it doesn't care that the trajectory is the shortest path to the
+ goal destination because it doesn't make a difference.
+ Accordingly, it's not necessarily the shortest path.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $r_{x}=-1$
+\end_inset
+
+: This is the 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+ which can cause the optimal policy to return the shortest path, as it penalizes
+ each extra step by a -1 reward.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Now as we know 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+ and our policy, we can find the optimal value for all states.
+\begin_inset Formula 
+\[
+V_{1}^{\pi}(s)\rightarrow V_{1}^{\pi}(12)=5\rightarrow V_{1}^{\pi}(11)=-1+5=4
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+V_{1}^{\pi}(s)=\left[\begin{array}{cccccccccccccccc}
+0 & 1 & 2 & 3 & -5 & 2 & 3 & 4 & 2 & 3 & 4 & 5 & 1 & 0 & -1 & -2\end{array}\right]^{T}
+\]
+
+\end_inset
+
+We claim that this is the converged value vector as well.
+ Since the values are calculated according to green and red states, and
+ the trajectory which policy outcomes is always the same, these are the
+ converged values.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Since the policy is still the same, we have:
+\begin_inset Formula 
+\[
+V_{1}^{\pi}(s)=\left[\begin{array}{cccccccccccccccc}
+12 & 11 & 10 & 9 & -3 & 10 & 9 & 8 & 10 & 9 & 8 & 7 & 11 & 12 & 13 & 14\end{array}\right]^{T}
+\]
+
+\end_inset
+
+And again, that's the converged values according to the mentioned argument.
+\end_layout
+
+\begin_layout Enumerate
+We have:
+\begin_inset Formula 
+\begin{align*}
+V_{new}^{\pi}(s)= & r(s,\pi(s))+c+\gamma\Sigma_{s'}p(s'|s,\pi(s))V_{new}^{\pi}(s')\\
+\rightarrow V_{new}^{\pi}(s)= & r(s,\pi(s))+c+\gamma\Sigma_{s'}p(s'|s,\pi(s))\left[r(s',\pi(s'))+c+\gamma\Sigma_{s''}p(s''|s',\pi(s'))V_{new}^{\pi}(s'')\right]\\
+= & r(s,\pi(s))+\gamma\Sigma_{s'}p(s'|s,\pi(s))\left[r(s',\pi(s'))+\gamma\Sigma_{s''}p(s''|s',\pi(s'))V_{new}^{\pi}(s'')\right]+c+\gamma c
+\end{align*}
+
+\end_inset
+
+Now, from the recursive structure of the equation we can derive:
+\begin_inset Formula 
+\begin{align*}
+V_{new}^{\pi}(s)= & V_{old}^{\pi}(s)+c+\gamma c+\gamma^{2}c+\cdots\\
+\xrightarrow[infinite\;sequence]{0<\gamma<1}V_{new}^{\pi}(s)= & V_{old}^{\pi}(s)+\frac{c}{1-\gamma}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+As we said in (a), when 
+\begin_inset Formula $r_{s}>0$
+\end_inset
+
+, the optimal policy is just to roam around in order to never stop.
+ As a result, the trajectory becomes infinite and since 
+\begin_inset Formula $\gamma=1$
+\end_inset
+
+, the values of the unshaded squares become 
+\begin_inset Formula $\infty$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The rewards' sequence which each state gets is either one of these three:
+\begin_inset Formula 
+\begin{align*}
+1) & r_{s},r_{s},\cdots\\
+\text{2)} & r_{s},r_{s},\cdots,r_{g}\\
+3) & r_{s},r_{s},\cdots,r_{r}
+\end{align*}
+
+\end_inset
+
+where the first one means just roaming around, and the followings mean there
+ will be a sequence of 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+ and the final reward of a stop state.
+ The value of the first one is:
+\begin_inset Formula 
+\begin{align*}
+= & r_{s}+\gamma r_{s}+\gamma^{2}r_{s}+\cdots\\
+= & r_{s}(1+\gamma+\gamma^{2}+\cdots)\\
+= & \frac{r_{s}}{1-\gamma}
+\end{align*}
+
+\end_inset
+
+This equation shows that the choice of the optimal policy depends on 
+\begin_inset Formula $\gamma$
+\end_inset
+
+.
+ Imagine 
+\begin_inset Formula $\gamma=0$
+\end_inset
+
+, in this case, the total value of a state if it just roams around is 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+; therefore, it's reasonable for the optimal policy to decide to approach
+ a stop state.
+\end_layout
+
+\begin_layout Enumerate
+As we mentioned earlier, 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+cannot be positive.
+ Now, imagine for an arbitrary state, the number of steps to reach the red
+ state is x, and y is the number of steps to the green state.
+ We want for some states that:
+\begin_inset Formula 
+\begin{align*}
+xr_{s}-5\geq & yr_{s}+5\text{,\ensuremath{\;r_{s}<0}}\\
+(x-y)r_{s}\geq & 10\text{,\;\ensuremath{r_{s}<0}}
+\end{align*}
+
+\end_inset
+
+ The intuition we have is that this scenario can happen for states near
+ the red state since they don't want to undergo a large penalty toward the
+ green state.
+ Consequently, 
+\begin_inset Formula $x-y<0$
+\end_inset
+
+, and we already know 
+\begin_inset Formula $r_{s}<0$
+\end_inset
+
+.
+ In order to find the maximum value for 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+ , one should minimize 
+\begin_inset Formula $(x-y)$
+\end_inset
+
+, which is -2 for states 6, 9, 13, 14, 15.
+ As a result, the maximum value for 
+\begin_inset Formula $r_{s}$
+\end_inset
+
+ is -5
+\begin_inset Formula $\rightarrow r_{s}\leq-5$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Value of Different Policies 
+\end_layout
+
+\begin_layout Section
+Fixed Point
+\end_layout
+
+\begin_layout Enumerate
+Base case:
+\begin_inset Formula 
+\[
+n=0\rightarrow||V_{n+1}-V_{n}||_{\infty}\leq||V_{1}-V_{0}||_{\infty}
+\]
+
+\end_inset
+
+Inductive step: Assume it holds for 
+\begin_inset Formula $n=k$
+\end_inset
+
+.
+ For 
+\begin_inset Formula $n=k+1$
+\end_inset
+
+, we have
+\begin_inset Formula 
+\[
+||V_{k+2}-V_{k+1}||_{\infty}=||BV_{k+1}-BV_{k}||_{\infty}\leq\gamma||V_{k+1}-V_{k}||_{\infty}\xrightarrow{induction}\leq\gamma\gamma^{k}||V_{1}-V_{0}||_{\infty}=\gamma^{k+1}||V_{1}-V_{0}||_{\infty}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+By triangle inequality we have
+\begin_inset Formula 
+\begin{align*}
+\rightarrow||V_{n+c}-V_{n+c-1}+V_{n+c-1}-V_{n+c-2}+\cdots+V_{n+1}-V_{n}||_{\infty}\leq & ||V_{n+c}-V_{n+c-1}||_{\infty}+\cdots+||V_{n+1}-V_{n}||_{\infty}\\
+\leq & \Sigma_{k=n}^{k=m-1}||V_{k+1}-V_{k}||_{\infty}\\
+\leq & \Sigma_{k=n}^{k=m-1}\gamma^{k}||V_{1}-V_{0}||_{\infty}\\
+\xrightarrow{geometric}= & \frac{\gamma^{n}(1-\gamma^{m-n})}{1-\gamma}||V_{1}-V_{0}||_{\infty}\\
+= & \frac{\gamma^{n}-\gamma^{m}}{1-\gamma}||V_{1}-V_{0}||_{\infty}\\
+\leq & \frac{\gamma^{n}}{1-\gamma}||V_{1}-V_{0}||_{\infty}\\
+\\
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Consider a sequence of 
+\begin_inset Formula $V$
+\end_inset
+
+.
+ We want to use the inequality we proved in the previous part.
+ Let c=1, and 
+\begin_inset Formula $n\rightarrow\infty.$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+0\leq\gamma\leq1\rightarrow & \gamma^{n}=0\rightarrow0\leq||V_{n+1}-V_{n}||_{\infty}\leq0\\
+\end{align*}
+
+\end_inset
+
+From this, it is obvious from the definition that this is a cauchy sequence.
+ Now for the fixed point:
+\begin_inset Formula 
+\[
+0\leq||V_{n+1}-V_{n}||_{\infty}\leq0\rightarrow V_{n+1}=V_{n}\rightarrow BV_{n}=V_{n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Proof by contradiction:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Assume we found two fixed points 
+\begin_inset Formula $V'$
+\end_inset
+
+, 
+\begin_inset Formula $V''$
+\end_inset
+
+.
+ Now we have:
+\begin_inset Formula 
+\[
+||V'-V''||_{\infty}\xrightarrow{fixed\;point}||BV'-BV''||_{\infty}\leq\gamma||V'-V''||_{\infty}
+\]
+
+\end_inset
+
+We actually reach to:
+\begin_inset Formula 
+\[
+||V'-V''||_{\infty}\leq\gamma||V'-V''||_{\infty}
+\]
+
+\end_inset
+
+Since 
+\begin_inset Formula $\gamma\neq0,\gamma\neq1$
+\end_inset
+
+ based on the question; hence, 
+\begin_inset Formula $||V'-V''||_{\infty}=0$
+\end_inset
+
+.
+ Which is a contradiction to our assumption.
+ Therefore, the fixed point is unique.
+ 
+\end_layout
+
+\end_deeper
+\end_body
+\end_document
