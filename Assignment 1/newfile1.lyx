@@ -4,7 +4,7 @@
 \begin_header
 \save_transient_properties true
 \origin unavailable
-\textclass article
+\textclass scrartcl
 \begin_preamble
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \end_preamble
@@ -46,8 +46,8 @@
 \use_package stackrel 1
 \use_package stmaryrd 1
 \use_package undertilde 1
-\cite_engine basic
-\cite_engine_type default
+\cite_engine natbib
+\cite_engine_type authoryear
 \biblio_style plain
 \use_bibtopic false
 \use_indices false
@@ -60,8 +60,8 @@
 \shortcut idx
 \color #008000
 \end_index
-\secnumdepth 3
-\tocdepth 3
+\secnumdepth 1
+\tocdepth 1
 \paragraph_separation indent
 \paragraph_indentation default
 \is_math_indent 0
@@ -103,7 +103,8 @@ An optimal policy is a policy in which for each state, the corresponding
 \begin_inset Formula $r_{s}$
 \end_inset
 
- set to find out the value functions of states, which generally is
+ set to find out the value functions of states, which generally is (our
+ policy is deterministic and Markov property holds in this setting.):
 \begin_inset Formula 
 \[
 V^{\pi}(s)=r(s,\pi(s))+\gamma\Sigma_{s'}p(s'|s,\pi(s))V^{\pi}(s')
